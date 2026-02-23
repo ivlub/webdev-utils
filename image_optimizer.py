@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Set
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageOps
 except ImportError:
     print("Error: Pillow library is required.")
     print("Install it with: pip install Pillow")
@@ -92,7 +92,8 @@ def convert_to_webp(image_path: Path, quality: int = 85, backup: bool = False) -
         
         # Open and convert image
         with Image.open(image_path) as img:
-            # Convert to RGB if necessary (for PNG with transparency, use RGBA)
+            img = ImageOps.exif_transpose(img)
+
             if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
                 # Keep alpha channel for WebP
                 if img.mode != 'RGBA':
